@@ -1,0 +1,22 @@
+name: PlayerNotes
+main: com.hamaluik.PlayerNotes.PlayerNotes
+version: 1.0.0
+author: FuzzyWuzzie
+softdepend: [Permissions]
+database: true
+commands:
+   n:
+      description: write a note about a player
+      usage: |
+            usage:
+                /note [player] <your notes...>
+   nd:
+      description: delete a note about a player
+      usage: |
+            usage:
+                /nd <id>
+   notes:
+      description: get notes about a player, most recent first
+      usage: |
+            usage:
+                /notes [player] [page]

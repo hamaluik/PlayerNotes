@@ -1,0 +1,32 @@
+PlayerNotes is a simple plugin for Bukkit that allows moderators to
+keep track of the players on their server. Someone caught griefing?
+Make a note of it. Someone got promoted for good behaviour? Make a
+note of it. Other mods can then check the notes on a given player
+to see what they've been up to, in order to better determine the
+appropriate course of action.
+
+== Commands ==
+    * /n <playername> <note>
+        Write down a note about <playername>
+    * /notes <playername> [page]
+        See the notes about a player, with optional page number
+    * /n <id>
+        Delete a note with a given ID #. The ID # of a note is found
+        in the brackets at the end of each note.
+        
+== Permissions ==
+    * For /n:
+        playernotes.note
+    * For /notes:
+        playernotes.notes
+    * For /nd:
+        playernotes.playernotes.notedelete
+        
+== Installation ==
+Simply install the PlayerNotes.jar into the plugins folder, and it will
+automatically install a default configuration file and database (default
+uses sqlite) the first time it runs. Optionally, edit the config.yml file
+to allow the plugin to use MySQL.
+
+== Changelog ==
+    * v1.0.0 Initial release
