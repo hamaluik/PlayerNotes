@@ -107,10 +107,10 @@ public class PlayerNotes extends JavaPlugin {
 				out.write("database: sqlite\n");
 				out.write("# if using sqlite, this should be: plugins/PlayerNotes/PlayerNotes.db\n");
 				out.write("# if using mysql, this is the mysql database you wish to use\n");
-				out.write("database-name: plugins/PlayerNotes/PlayerNotes.db");
+				out.write("database-name: plugins/PlayerNotes/PlayerNotes.db\n");
 				out.write("# only needed if using mysql\n");
-				out.write("mysql-user: ''");
-				out.write("mysql-pass: ''");
+				out.write("mysql-user: ''\n");
+				out.write("mysql-pass: ''\n");
 				out.close();
 			} catch(IOException ex) {
 				// something went wrong :/

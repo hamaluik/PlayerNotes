@@ -40,7 +40,7 @@ public class CommandNote implements Command {
 			PlayerNotesCommandExecutor.returnMessage(sender, "&cAn error occurred!");
 		}
 		else {
-			PlayerNotesCommandExecutor.returnMessage(sender, "&6Your note has been recorded successfully!");
+			PlayerNotesCommandExecutor.returnMessage(sender, "&6Your note about &f"+target+" &6has been recorded successfully!");
 		}
 		
 		return true;

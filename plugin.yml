@@ -9,7 +9,7 @@ commands:
       description: write a note about a player
       usage: |
             usage:
-                /note [player] <your notes...>
+                /n [player] <your notes...>
    nd:
       description: delete a note about a player
       usage: |
