@@ -185,8 +185,8 @@ public class PlayerNotes extends JavaPlugin {
 				out.write("# only needed if using mysql\n");
 				out.write("mysql-user: ''\n");
 				out.write("mysql-pass: ''\n\n");
-				out.write("# how often (in minutes) to save stats to the DB");
-				out.write("stats-dump-interval: 5\n");
+				out.write("# how often (in minutes) to force-save stats to the DB\n");
+				out.write("stats-dump-interval: 30\n");
 				out.close();
 			} catch(IOException ex) {
 				// something went wrong :/
