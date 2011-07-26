@@ -180,7 +180,6 @@ public class DBManager {
 			statement = connect.createStatement();
 			resultSet = statement.executeQuery("select * from playerStats where name='"+player+"'");
 			
-			// TODO: fix double insertion!
 			if(resultSet.next()) {
 				// they already exist, update the record
 				// but first, get their id!

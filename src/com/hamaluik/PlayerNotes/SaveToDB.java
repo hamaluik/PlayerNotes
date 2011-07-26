@@ -17,5 +17,6 @@ public class SaveToDB implements Runnable {
 				plugin.playerStats.get(player).changed = false;
 			}
 		}
+		plugin.log.info("[PlayerNotes] saved!");
 	}
 }
