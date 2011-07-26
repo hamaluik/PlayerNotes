@@ -20,3 +20,8 @@ commands:
       usage: |
             usage:
                 /notes [player] [page]
+   stats:
+      description: get stats about a player
+      usage: |
+            usage:
+                /stats <player>

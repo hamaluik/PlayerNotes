@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.logging.Level;
 
@@ -34,13 +35,15 @@ public class DBManager {
 		}
 	}
 	
-	public void ensureTableExists() {
+	public void ensureTablesExist() {
 		try {
 			// load the database
 			connect();
 
-			// create the table if it does not exist
-			preparedStatement = connect.prepareStatement("CREATE TABLE IF NOT EXISTS notes ( id INTEGER NOT NULL PRIMARY KEY AUTO"+(plugin.useMYSQL?"_":"")+"INCREMENT UNIQUE, date DATETIME NOT NULL, noteTaker TINYTEXT NOT NULL, notee TINYTEXT NOT NULL, note MEDIUMTEXT NOT NULL );");
+			// create the tables if they does not exist
+			preparedStatement = connect.prepareStatement("CREATE TABLE IF NOT EXISTS notes ( id INTEGER NOT NULL PRIMARY KEY AUTO"+(plugin.useMYSQL?"_":"")+"INCREMENT UNIQUE, date DATE NOT NULL, noteTaker TINYTEXT NOT NULL, notee TINYTEXT NOT NULL, note MEDIUMTEXT NOT NULL );");
+			preparedStatement.executeUpdate();
+			preparedStatement = connect.prepareStatement("CREATE TABLE IF NOT EXISTS playerStats ( id INTEGER NOT NULL PRIMARY KEY AUTO"+(plugin.useMYSQL?"_":"")+"INCREMENT UNIQUE, name TINYTEXT NOT NULL, dateJoined DATE NOT NULL, timeOnServer BIGINT UNSIGNED NOT NULL, numJoins INT UNSIGNED NOT NULL, numKicks INT UNSIGNED NOT NULL, blocksBroken INT UNSIGNED NOT NULL, blocksPlaced INT UNSIGNED NOT NULL, playersKilled INT UNSIGNED NOT NULL, deaths INT UNSIGNED NOT NULL);");
 			preparedStatement.executeUpdate();
 		}
 		catch(Exception e) {
@@ -61,7 +64,8 @@ public class DBManager {
 			
 			// get the results
 			statement = connect.createStatement();
-			resultSet = statement.executeQuery("select * from notes where notee='"+player+"' order by date desc");
+			if(!player.equals("*")) resultSet = statement.executeQuery("select * from notes where notee='"+player+"' order by date desc");
+			else resultSet = statement.executeQuery("select * from notes order by date desc");
 			
 			// now go through the results..
 			while(resultSet.next()) {
@@ -130,10 +134,106 @@ public class DBManager {
 		return ret;
 	}
 	
+	public Stat getStat(String player) {
+		// begin storing the results
+		Stat stat = new Stat();
+		stat.name = player;
+		stat.dateJoined = new Date();
+		
+		try {
+			// load the database
+			connect();
+			
+			// get the results
+			statement = connect.createStatement();
+			resultSet = statement.executeQuery("select * from playerStats where name='"+player+"' limit 1");
+			
+			// now go through the results..
+			if(resultSet.next()) {
+				stat.name = resultSet.getString("name");
+				stat.dateJoined = resultSet.getDate("dateJoined");
+				stat.timeOnServer = resultSet.getLong("timeOnServer");
+				stat.numJoins = resultSet.getInt("numJoins");
+				stat.numKicks = resultSet.getInt("numKicks");
+				stat.blocksBroken = resultSet.getInt("blocksBroken");
+				stat.blocksPlaced = resultSet.getInt("blocksPlaced");
+				stat.playersKilled = resultSet.getInt("playersKilled");
+				stat.deaths = resultSet.getInt("deaths");
+			}
+		}
+		catch(Exception e) {
+			plugin.log.log(Level.SEVERE, "Database exception", e);
+		}
+		finally {
+			close(plugin);
+		}
+		return stat;
+	}
+	
+	public boolean setStat(String player, Stat stat) {
+		boolean ret = true;
+		try {
+			// load the database
+			connect();
+			
+			// write the statement
+			statement = connect.createStatement();
+			resultSet = statement.executeQuery("select * from playerStats where name='"+player+"'");
+			
+			// TODO: fix double insertion!
+			if(resultSet.next()) {
+				// they already exist, update the record
+				// but first, get their id!
+				int id = resultSet.getInt("id");
+				
+				// now write the statement..
+				preparedStatement = connect.prepareStatement("update playerStats set name=?, dateJoined=?, timeOnServer=?, numJoins=?, numKicks=?, blocksBroken=?, blocksPlaced=?, playersKilled=?, deaths=? where id="+id+";");
+				preparedStatement.setString(1, stat.name);
+				preparedStatement.setDate(2, new java.sql.Date(stat.dateJoined.getTime()));
+				preparedStatement.setLong(3, stat.timeOnServer);
+				preparedStatement.setInt(4, stat.numJoins);
+				preparedStatement.setInt(5, stat.numKicks);
+				preparedStatement.setInt(6, stat.blocksBroken);
+				preparedStatement.setInt(7, stat.blocksPlaced);
+				preparedStatement.setInt(8, stat.playersKilled);
+				preparedStatement.setInt(9, stat.deaths);
+				
+				// and execute it!
+				preparedStatement.executeUpdate();
+			}
+			else {
+				// they don't exist yet, insert the record
+				// write the statement
+				preparedStatement = connect.prepareStatement("insert into playerStats (id, name, dateJoined, timeOnServer, numJoins, numKicks, blocksBroken, blocksPlaced, playersKilled, deaths) values (null, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				preparedStatement.setString(1, stat.name);
+				preparedStatement.setDate(2, new java.sql.Date(stat.dateJoined.getTime()));
+				preparedStatement.setLong(3, stat.timeOnServer);
+				preparedStatement.setInt(4, stat.numJoins);
+				preparedStatement.setInt(5, stat.numKicks);
+				preparedStatement.setInt(6, stat.blocksBroken);
+				preparedStatement.setInt(7, stat.blocksPlaced);
+				preparedStatement.setInt(8, stat.playersKilled);
+				preparedStatement.setInt(9, stat.deaths);
+				
+				// and execute it!
+				preparedStatement.executeUpdate();
+			}
+		}
+		catch(Exception e) {
+			plugin.log.log(Level.SEVERE, "Database exception", e);
+			ret = false;
+		}
+		finally {
+			close(plugin);
+		}
+		return ret;
+	}
+	
 	private void close(PlayerNotes plugin) {
 		try {
 			if(resultSet != null) resultSet.close();
 			if(statement != null) statement.close();
+			if(preparedStatement != null) preparedStatement.close();
 			if(connect != null) connect.close();
 		}
 		catch(Exception e) {

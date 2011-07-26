@@ -21,7 +21,16 @@ public class PlayerNotesCommandExecutor implements CommandExecutor {
 			}
 		}
 		if(plugin.commands.containsKey(label)) {
-			if(!plugin.commands.get(label).onCommand(sender, args)) returnMessage(sender, "&cInvalid command usage!");
+			boolean hasPermission = true;
+			if(sender instanceof Player) {
+				hasPermission = plugin.hasPermission((Player)sender, plugin.commands.get(label).requiredPermission());
+			}
+			if(hasPermission) {
+				if(!plugin.commands.get(label).onCommand(sender, args)) returnMessage(sender, "&cInvalid command usage!");
+			}
+			else {
+				returnMessage(sender, "&cYou don't have permission for that!");
+			}
 		}
 		
 		return true;

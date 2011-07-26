@@ -35,17 +35,18 @@ public class CommandNotes implements Command {
 			return false;
 		}
 		
-		// adjust it..
-		
 		// ok, we have the page and target
 		// look up the target's actual name
-		if(plugin.getServer().getPlayer(typedTarget) != null) {
-			// the player is online, set their name
-			target = plugin.getServer().getPlayer(typedTarget).getName();
+		if(!typedTarget.equals("*")) {
+			if(plugin.getServer().getPlayer(typedTarget) != null) {
+				// the player is online, set their name
+				target = plugin.getServer().getPlayer(typedTarget).getName();
+			}
+			else {
+				target = typedTarget;
+			}
 		}
-		else {
-			target = typedTarget;
-		}
+		else target = "*";
 		
 		// now call the query
 		LinkedList<Note> notes = plugin.dbm.getNotes(target);
@@ -70,10 +71,19 @@ public class CommandNotes implements Command {
 				end = notes.size();
 			}
 			
-			PlayerNotesCommandExecutor.returnMessage(sender, "&6Notes for &f" + target + " &7(Page "+page+"/"+numPages+")&6:");
-			for(int i = start; i < end; i++) {
-				Note note = notes.get(i);
-				PlayerNotesCommandExecutor.returnMessage(sender, "&7[" + note.noteDate + "] &6" + note.noteTaker + ": &f" + note.note + " &8(" + note.id + ")");
+			if(!target.equals("*")) {
+				PlayerNotesCommandExecutor.returnMessage(sender, "&6Notes for &f" + target + " &7(Page "+page+"/"+numPages+")&6:");
+				for(int i = start; i < end; i++) {
+					Note note = notes.get(i);
+					PlayerNotesCommandExecutor.returnMessage(sender, "&7[" + note.noteDate + "] &6" + note.noteTaker + ": &f" + note.note + " &8(" + note.id + ")");
+				}
+			}
+			else {
+				PlayerNotesCommandExecutor.returnMessage(sender, "&6All notes &7(Page "+page+"/"+numPages+")&6:");
+				for(int i = start; i < end; i++) {
+					Note note = notes.get(i);
+					PlayerNotesCommandExecutor.returnMessage(sender, "&7[" + note.noteDate + "] &6" + note.noteTaker + ": &e"+note.notee+": &f" + note.note + " &8(" + note.id + ")");
+				}
 			}
 		}
 		else {
