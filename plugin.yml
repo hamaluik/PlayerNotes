@@ -2,7 +2,7 @@ name: PlayerNotes
 main: com.hamaluik.PlayerNotes.PlayerNotes
 version: 1.0.0
 author: FuzzyWuzzie
-softdepend: [Permissions]
+softdepend: [Permissions, ModTRS]
 database: true
 commands:
    n:
@@ -25,3 +25,8 @@ commands:
       usage: |
             usage:
                 /stats <player>
+   rank:
+      description: queries the rank/group from Permissions for <player>
+      usage: |
+            usage:
+                /rank <player>

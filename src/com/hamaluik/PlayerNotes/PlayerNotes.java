@@ -79,6 +79,7 @@ public class PlayerNotes extends JavaPlugin {
 		registerCommand(new CommandNoteDelete(this));
 		registerCommand(new CommandNotes(this));
 		registerCommand(new CommandStats(this));
+		registerCommand(new CommandRank(this));
 		
 		// load the "join times" for any players currently on the server
 		// (in case of reload)
@@ -165,6 +166,20 @@ public class PlayerNotes extends JavaPlugin {
 		}
 		else {
 			return (permissionHandler.has(player, permission));
+		}
+	}
+	
+	// just an interface function for getting user's groups
+	// if permissions are down, default to none.
+	public String[] getPlayerGroups(String player) {
+		if(permissionHandler == null) {
+			return null;
+		}
+		else {
+			Player p = this.getServer().getPlayer(player);
+			String world = "world";
+			if(p != null) world = p.getWorld().getName();
+			return permissionHandler.getGroups(world, player);
 		}
 	}
 	
