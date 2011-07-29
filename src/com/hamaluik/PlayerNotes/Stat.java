@@ -6,7 +6,7 @@ public class Stat {
 	public boolean changed = false;
 	public String name = new String("");
 	public Date dateJoined = new Date();
-	public long joinTime; // for internal time-on-server keeping
+	public long joinTime = -1; // for internal time-on-server keeping
 	public long timeOnServer;
 	public int numJoins;
 	public int numKicks;
@@ -14,4 +14,5 @@ public class Stat {
 	public int blocksPlaced;
 	public int playersKilled;
 	public int deaths;
+	public int modRequests;
 }

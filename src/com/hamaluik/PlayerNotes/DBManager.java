@@ -43,7 +43,7 @@ public class DBManager {
 			// create the tables if they does not exist
 			preparedStatement = connect.prepareStatement("CREATE TABLE IF NOT EXISTS notes ( id INTEGER NOT NULL PRIMARY KEY AUTO"+(plugin.useMYSQL?"_":"")+"INCREMENT UNIQUE, date DATE NOT NULL, noteTaker TINYTEXT NOT NULL, notee TINYTEXT NOT NULL, note MEDIUMTEXT NOT NULL );");
 			preparedStatement.executeUpdate();
-			preparedStatement = connect.prepareStatement("CREATE TABLE IF NOT EXISTS playerStats ( id INTEGER NOT NULL PRIMARY KEY AUTO"+(plugin.useMYSQL?"_":"")+"INCREMENT UNIQUE, name TINYTEXT NOT NULL, dateJoined DATE NOT NULL, timeOnServer BIGINT UNSIGNED NOT NULL, numJoins INT UNSIGNED NOT NULL, numKicks INT UNSIGNED NOT NULL, blocksBroken INT UNSIGNED NOT NULL, blocksPlaced INT UNSIGNED NOT NULL, playersKilled INT UNSIGNED NOT NULL, deaths INT UNSIGNED NOT NULL);");
+			preparedStatement = connect.prepareStatement("CREATE TABLE IF NOT EXISTS playerStats ( id INTEGER NOT NULL PRIMARY KEY AUTO"+(plugin.useMYSQL?"_":"")+"INCREMENT UNIQUE, name TINYTEXT NOT NULL, dateJoined DATE NOT NULL, timeOnServer BIGINT UNSIGNED NOT NULL, numJoins INT UNSIGNED NOT NULL, numKicks INT UNSIGNED NOT NULL, blocksBroken INT UNSIGNED NOT NULL, blocksPlaced INT UNSIGNED NOT NULL, playersKilled INT UNSIGNED NOT NULL, deaths INT UNSIGNED NOT NULL, modRequests INT UNSIGNED NOT NULL);");
 			preparedStatement.executeUpdate();
 		}
 		catch(Exception e) {
@@ -64,7 +64,7 @@ public class DBManager {
 			
 			// get the results
 			statement = connect.createStatement();
-			if(!player.equals("*")) resultSet = statement.executeQuery("select * from notes where notee='"+player+"' order by date desc");
+			if(!player.equals("*")) resultSet = statement.executeQuery("select * from notes where lower(notee)='"+player.toLowerCase()+"' order by date desc");
 			else resultSet = statement.executeQuery("select * from notes order by date desc");
 			
 			// now go through the results..
@@ -146,7 +146,7 @@ public class DBManager {
 			
 			// get the results
 			statement = connect.createStatement();
-			resultSet = statement.executeQuery("select * from playerStats where name='"+player+"' limit 1");
+			resultSet = statement.executeQuery("select * from playerStats where lower(name)='"+player.toLowerCase()+"' limit 1");
 			
 			// now go through the results..
 			if(resultSet.next()) {
@@ -159,6 +159,10 @@ public class DBManager {
 				stat.blocksPlaced = resultSet.getInt("blocksPlaced");
 				stat.playersKilled = resultSet.getInt("playersKilled");
 				stat.deaths = resultSet.getInt("deaths");
+				stat.modRequests = resultSet.getInt("modRequests");
+			}
+			else {
+				stat = null;
 			}
 		}
 		catch(Exception e) {
@@ -178,7 +182,7 @@ public class DBManager {
 			
 			// write the statement
 			statement = connect.createStatement();
-			resultSet = statement.executeQuery("select * from playerStats where name='"+player+"'");
+			resultSet = statement.executeQuery("select * from playerStats where lower(name)='"+player.toLowerCase()+"'");
 			
 			if(resultSet.next()) {
 				// they already exist, update the record
@@ -186,7 +190,7 @@ public class DBManager {
 				int id = resultSet.getInt("id");
 				
 				// now write the statement..
-				preparedStatement = connect.prepareStatement("update playerStats set name=?, dateJoined=?, timeOnServer=?, numJoins=?, numKicks=?, blocksBroken=?, blocksPlaced=?, playersKilled=?, deaths=? where id="+id+";");
+				preparedStatement = connect.prepareStatement("update playerStats set name=?, dateJoined=?, timeOnServer=?, numJoins=?, numKicks=?, blocksBroken=?, blocksPlaced=?, playersKilled=?, deaths=?, modRequests=? where id="+id+";");
 				preparedStatement.setString(1, stat.name);
 				preparedStatement.setDate(2, new java.sql.Date(stat.dateJoined.getTime()));
 				preparedStatement.setLong(3, stat.timeOnServer);
@@ -196,6 +200,7 @@ public class DBManager {
 				preparedStatement.setInt(7, stat.blocksPlaced);
 				preparedStatement.setInt(8, stat.playersKilled);
 				preparedStatement.setInt(9, stat.deaths);
+				preparedStatement.setInt(10, stat.modRequests);
 				
 				// and execute it!
 				preparedStatement.executeUpdate();
@@ -203,7 +208,7 @@ public class DBManager {
 			else {
 				// they don't exist yet, insert the record
 				// write the statement
-				preparedStatement = connect.prepareStatement("insert into playerStats (id, name, dateJoined, timeOnServer, numJoins, numKicks, blocksBroken, blocksPlaced, playersKilled, deaths) values (null, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				preparedStatement = connect.prepareStatement("insert into playerStats (id, name, dateJoined, timeOnServer, numJoins, numKicks, blocksBroken, blocksPlaced, playersKilled, deaths, modRequests) values (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 				preparedStatement.setString(1, stat.name);
 				preparedStatement.setDate(2, new java.sql.Date(stat.dateJoined.getTime()));
 				preparedStatement.setLong(3, stat.timeOnServer);
@@ -213,6 +218,7 @@ public class DBManager {
 				preparedStatement.setInt(7, stat.blocksPlaced);
 				preparedStatement.setInt(8, stat.playersKilled);
 				preparedStatement.setInt(9, stat.deaths);
+				preparedStatement.setInt(10, stat.modRequests);
 				
 				// and execute it!
 				preparedStatement.executeUpdate();
