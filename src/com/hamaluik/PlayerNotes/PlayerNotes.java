@@ -43,6 +43,7 @@ public class PlayerNotes extends JavaPlugin {
 	
 	// options
 	boolean useMYSQL = true;
+	public boolean hasModTRS = false;
 	String databaseName;
 	String mysqlUser;
 	String mysqlPass;
@@ -60,10 +61,13 @@ public class PlayerNotes extends JavaPlugin {
 		// import the plugin manager
 		PluginManager pm = this.getServer().getPluginManager();
 		
+		// check to see if ModTRS is installed (track # of submitted mod requests)
+		if(pm.getPlugin("ModTRS") != null) hasModTRS = true;
+		
 		// register the events
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_KICK, playerListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Event.Priority.Monitor, this);
+		if(hasModTRS) pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Monitor, this);

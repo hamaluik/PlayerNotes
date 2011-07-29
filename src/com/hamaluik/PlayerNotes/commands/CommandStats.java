@@ -54,7 +54,7 @@ public class CommandStats implements Command {
 			PlayerNotesCommandExecutor.returnMessage(sender, " &6Logins: &7" + stat.numJoins + " &6Times kicked: &7" + stat.numKicks);
 			PlayerNotesCommandExecutor.returnMessage(sender, " &6Blocks broken: &7" + stat.blocksBroken + " &6placed: &7" + stat.blocksPlaced);
 			PlayerNotesCommandExecutor.returnMessage(sender, " &6Players killed: &7" + stat.playersKilled + " &6Deaths: &7" + stat.deaths);
-			PlayerNotesCommandExecutor.returnMessage(sender, " &6Mod Requests: &7" + stat.modRequests);
+			if(plugin.hasModTRS) PlayerNotesCommandExecutor.returnMessage(sender, " &6Mod Requests: &7" + stat.modRequests);
 		}
 		else {
 			// not in the system..
