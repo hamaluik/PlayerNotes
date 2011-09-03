@@ -3,6 +3,7 @@ package com.hamaluik.PlayerNotes.commands;
 import java.text.SimpleDateFormat;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.hamaluik.PlayerNotes.PlayerNotes;
 import com.hamaluik.PlayerNotes.PlayerNotesCommandExecutor;
@@ -18,6 +19,9 @@ public class CommandStats implements Command {
 		String target = new String("");
 		if(args.length == 1) {
 			typedTarget = args[0];
+		}
+		else if(args.length == 0 && sender instanceof Player) {
+			typedTarget = ((Player)sender).getName();
 		}
 		else {
 			return false;
@@ -50,8 +54,10 @@ public class CommandStats implements Command {
 			int minutes = (int)((stat.timeOnServer  / 60) - (days * 1440) - (hours * 60));
 			int seconds = (int)stat.timeOnServer % 60;
 			String date = new SimpleDateFormat("yyyy-MM-dd").format(stat.dateJoined);
+			String logon = new SimpleDateFormat("yyyy-MM-dd h:m:s a").format(stat.lastLogin);
 			PlayerNotesCommandExecutor.returnMessage(sender, " &6Joined: &7" + date + " &6Total time: &7" + days + "d" + hours + "h" + minutes + "m" + seconds + "s");
 			PlayerNotesCommandExecutor.returnMessage(sender, " &6Logins: &7" + stat.numJoins + " &6Times kicked: &7" + stat.numKicks);
+			PlayerNotesCommandExecutor.returnMessage(sender, " &6Last login: &7" + logon);
 			PlayerNotesCommandExecutor.returnMessage(sender, " &6Blocks broken: &7" + stat.blocksBroken + " &6placed: &7" + stat.blocksPlaced);
 			PlayerNotesCommandExecutor.returnMessage(sender, " &6Players killed: &7" + stat.playersKilled + " &6Deaths: &7" + stat.deaths);
 			if(plugin.hasModTRS) PlayerNotesCommandExecutor.returnMessage(sender, " &6Mod Requests: &7" + stat.modRequests);
@@ -73,10 +79,10 @@ public class CommandStats implements Command {
 	}
 	
 	public String getArguments() {
-		return "<player>";
+		return "[player]";
 	}
 	
 	public String getDescription() {
-		return "get the stats for <player>";
+		return "get the stats for [player], or yourself if [player] is blank";
 	}
 }

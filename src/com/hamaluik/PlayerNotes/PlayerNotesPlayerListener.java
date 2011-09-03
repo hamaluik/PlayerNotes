@@ -1,5 +1,7 @@
 package com.hamaluik.PlayerNotes;
 
+import java.util.Date;
+
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -21,6 +23,7 @@ public class PlayerNotesPlayerListener extends PlayerListener {
 		Stat stat = plugin.getPlayerStats(name, true);
 		// update the join time and join numbers
 		stat.joinTime = System.currentTimeMillis() / 1000;
+		stat.lastLogin = new Date();
 		stat.numJoins++;
 		stat.changed = true;
 	}

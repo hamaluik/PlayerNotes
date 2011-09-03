@@ -8,6 +8,7 @@ public class Stat {
 	public Date dateJoined = new Date();
 	public long joinTime = -1; // for internal time-on-server keeping
 	public long timeOnServer;
+	public Date lastLogin = new Date();
 	public int numJoins;
 	public int numKicks;
 	public int blocksBroken;
