@@ -28,5 +28,9 @@ automatically install a default configuration file and database (default
 uses sqlite) the first time it runs. Optionally, edit the config.yml file
 to allow the plugin to use MySQL.
 
+== TODO ==
+	* Add an API
+	* Change commands to be a bit more intuitive
+
 == Changelog ==
     * v1.0.0 Initial release
