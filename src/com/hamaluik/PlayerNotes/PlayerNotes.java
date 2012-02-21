@@ -1,3 +1,5 @@
+// HI KWINNO
+
 package com.hamaluik.PlayerNotes;
 
 import java.io.File;
@@ -8,20 +10,19 @@ import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-import com.hamaluik.PlayerNotes.commands.*;
+import ru.tehkode.permissions.PermissionManager;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
+import com.hamaluik.PlayerNotes.commands.*;
 
 public class PlayerNotes extends JavaPlugin {
 	// the basics
 	Logger log = Logger.getLogger("Minecraft");
-	public PermissionHandler permissionHandler;
+	PermissionManager permissions = null;
 	
 	// the database manager..
 	public DBManager dbm = new DBManager(this);
@@ -79,7 +80,6 @@ public class PlayerNotes extends JavaPlugin {
 		registerCommand(new CommandNoteDelete(this));
 		registerCommand(new CommandNotes(this));
 		registerCommand(new CommandStats(this));
-		registerCommand(new CommandRank(this));
 		
 		// load the "join times" for any players currently on the server
 		// (in case of reload)
@@ -146,40 +146,18 @@ public class PlayerNotes extends JavaPlugin {
 	
 	// load the permissions plugin..
 	private void setupPermissions() {
-		Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-		
-		if(this.permissionHandler == null) {
-			if(permissionsPlugin != null) {
-				this.permissionHandler = ((Permissions)permissionsPlugin).getHandler();
-				log.info("[PlayerNotes] permissions successfully loaded");
-			} else {
-				log.info("[PlayerNotes] permission system not detected, defaulting to OP");
-			}
-		}
+		if(getServer().getPluginManager().isPluginEnabled("PermissionsEx"))
+		    permissions = PermissionsEx.getPermissionManager();
 	}
 	
 	// just an interface function for checking permissions
 	// if permissions are down, default to OP status.
 	public boolean hasPermission(Player player, String permission) {
-		if(permissionHandler == null) {
+		if(permissions != null) {
+			return permissions.has(player, permission);
+		}
+		else {
 			return player.isOp();
-		}
-		else {
-			return (permissionHandler.has(player, permission));
-		}
-	}
-	
-	// just an interface function for getting user's groups
-	// if permissions are down, default to none.
-	public String[] getPlayerGroups(String player) {
-		if(permissionHandler == null) {
-			return null;
-		}
-		else {
-			Player p = this.getServer().getPlayer(player);
-			String world = "world";
-			if(p != null) world = p.getWorld().getName();
-			return permissionHandler.getGroups(world, player);
 		}
 	}
 	

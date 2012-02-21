@@ -157,7 +157,7 @@ public class DBManager {
 					stat.lastLogin = new Date(resultSet.getTimestamp("lastLogin").getTime());
 				}
 				catch(Exception e) {
-					stat.lastLogin = new Date(0);
+					stat.lastLogin = new Date();
 				}
 				stat.numJoins = resultSet.getInt("numJoins");
 				stat.numKicks = resultSet.getInt("numKicks");

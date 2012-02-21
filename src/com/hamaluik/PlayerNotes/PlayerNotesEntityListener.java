@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageByProjectileEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
@@ -52,22 +51,6 @@ public class PlayerNotesEntityListener extends EntityListener {
 			// see if another entity damaged them
 			if(event instanceof EntityDamageByEntityEvent) {
 				EntityDamageByEntityEvent mobevent = (EntityDamageByEntityEvent)event;
-				if(mobevent.getDamager() instanceof Player) {
-					// a player shot a bow at them
-					// store the last damager!
-					lastDamager.put(name, ((Player)mobevent.getDamager()).getName());
-				}
-				else {
-					// it was a ghast or skeleton shooting at them
-					// clear them from the last damager doo-dad
-					if(lastDamager.containsKey(name)) {
-						lastDamager.remove(name);
-					}
-				}
-			}
-			// see if it was a projectile
-			else if(event instanceof EntityDamageByProjectileEvent) {
-				EntityDamageByProjectileEvent mobevent = (EntityDamageByProjectileEvent)event;
 				if(mobevent.getDamager() instanceof Player) {
 					// a player shot a bow at them
 					// store the last damager!
