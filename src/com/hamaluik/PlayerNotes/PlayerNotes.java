@@ -22,7 +22,7 @@ import com.hamaluik.PlayerNotes.commands.*;
 public class PlayerNotes extends JavaPlugin {
 	// the basics
 	Logger log = Logger.getLogger("Minecraft");
-	PermissionManager permissions = null;
+	public PermissionManager permissions = null;
 	
 	// the database manager..
 	public DBManager dbm = new DBManager(this);
