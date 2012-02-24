@@ -100,7 +100,7 @@ public class CommandStatsGroup implements Command {
 	}
 	
 	public String getArguments() {
-		return "[group]";
+		return "<group>";
 	}
 	
 	public String getDescription() {

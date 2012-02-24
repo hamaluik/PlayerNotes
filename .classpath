@@ -2,12 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Kwinten/Libraries/bukkit-1.1-R4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kwinten/Libraries/ChatManager.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kwinten/Libraries/Modifyworld.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kwinten/Libraries/mysql-connector-java-bin.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kwinten/Libraries/Permissions.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kwinten/Libraries/PermissionsEx.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kwinten/Libraries/sqlite.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kenton/git/MCNSAChat2/lib/bukkit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kenton/git/MCNSAChat2/lib/PermissionsEx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

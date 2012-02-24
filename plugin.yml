@@ -25,6 +25,11 @@ commands:
       usage: |
             usage:
                 /stats <player>
+   statsg:
+      description: get stats about a group
+      usage: |
+            usage:
+                /statsg <group>
    rank:
       description: queries the rank/group from Permissions for <player>
       usage: |

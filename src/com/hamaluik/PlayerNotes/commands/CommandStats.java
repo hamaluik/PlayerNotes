@@ -17,7 +17,7 @@ public class CommandStats implements Command {
 		// get the target player
 		String typedTarget = new String("");
 		String target = new String("");
-		if(args.length == 1 && plugin.hasPermission((Player)sender, plugin.commands.get(label).requiredPermission("admin")) == true ) {
+		if(args.length == 1 && (!(sender instanceof Player) || plugin.hasPermission((Player)sender, "playernotes.stats.other"))) {
 			typedTarget = args[0];
 		}
 		else if(args.length == 0 && sender instanceof Player) {
@@ -70,19 +70,8 @@ public class CommandStats implements Command {
 		return true;
 	}
 	
-	public String requiredPermission(level) {
-		if(level == "admin")
-		{
-			return "playernotes.stats.all";
-		}
-		else if (level == "own")
-		{
-			return "playernotes.stats.own";
-		}
-		else
-		{
-			return "playernotes.stats";
-		}
+	public String requiredPermission() {
+		return "playernotes.stats.self";
 	}
 	
 	public String getCommand() {
