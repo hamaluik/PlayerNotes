@@ -81,6 +81,7 @@ public class PlayerNotes extends JavaPlugin {
 		registerCommand(new CommandNotes(this));
 		registerCommand(new CommandStats(this));
 		registerCommand(new CommandStatsGroup(this));
+		registerCommand(new CommandCount(this));
 		
 		// load the "join times" for any players currently on the server
 		// (in case of reload)
