@@ -3,21 +3,24 @@ package com.hamaluik.PlayerNotes;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityListener;
 
-public class PlayerNotesEntityListener extends EntityListener {
+public class PlayerNotesEntityListener implements Listener {
 	private PlayerNotes plugin;
 	private static HashMap<String, String> lastDamager = new HashMap<String, String>();
 	
 	// grab the main plug in so we can use it later
 	public PlayerNotesEntityListener(PlayerNotes instance) {
 		plugin = instance;
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-	
-	@Override
+
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDeath(EntityDeathEvent event) {
 		// see if a player is dying
 		if(event.getEntity() instanceof Player) {
@@ -40,8 +43,8 @@ public class PlayerNotesEntityListener extends EntityListener {
 			}
 		}
 	}
-	
-	@Override
+
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamage(EntityDamageEvent event) { 
 		// make sure a player got damaged
 		if(event.getEntity() instanceof Player) {

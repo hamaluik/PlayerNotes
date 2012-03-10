@@ -2,17 +2,13 @@
 
 package com.hamaluik.PlayerNotes;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -34,10 +30,10 @@ public class PlayerNotes extends JavaPlugin {
 	public HashMap<String, Command> commands = new HashMap<String, Command>();
 	
 	// the listeners
-	PlayerNotesPlayerListener playerListener = new PlayerNotesPlayerListener(this);
-	PlayerNotesEntityListener entityListener = new PlayerNotesEntityListener(this);
-	PlayerNotesBlockListener blockListener = new PlayerNotesBlockListener(this);
-	PlayerNotesCommandExecutor commandExecutor = new PlayerNotesCommandExecutor(this);
+	PlayerNotesPlayerListener playerListener;
+	PlayerNotesEntityListener entityListener;
+	PlayerNotesBlockListener blockListener;
+	PlayerNotesCommandExecutor commandExecutor;
 	
 	// the scheduled task
 	SaveToDB statsDump = new SaveToDB(this);
@@ -55,6 +51,7 @@ public class PlayerNotes extends JavaPlugin {
 		// set up the plugin..
 		this.setupPermissions();
 		this.loadConfiguration();
+		this.saveConfiguration();
 		
 		// ensure the database table exists..
 		dbm.ensureTablesExist();
@@ -65,15 +62,11 @@ public class PlayerNotes extends JavaPlugin {
 		// check to see if ModTRS is installed (track # of submitted mod requests)
 		if(pm.getPlugin("ModTRS") != null) hasModTRS = true;
 		
-		// register the events
-		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_KICK, playerListener, Event.Priority.Monitor, this);
-		if(hasModTRS) pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Event.Priority.Monitor, this);
+		// setup the listeners
+		playerListener = new PlayerNotesPlayerListener(this);
+		entityListener = new PlayerNotesEntityListener(this);
+		blockListener = new PlayerNotesBlockListener(this);
+		commandExecutor = new PlayerNotesCommandExecutor(this);
 		
 		// register commands
 		registerCommand(new CommandNote(this));
@@ -162,7 +155,7 @@ public class PlayerNotes extends JavaPlugin {
 		}
 	}
 	
-	private void checkConfiguration() {
+	/*private void checkConfiguration() {
 		// first, check to see if the file exists
 		File configFile = new File(getDataFolder() + "/config.yml");
 		if(!configFile.exists()) {
@@ -192,15 +185,12 @@ public class PlayerNotes extends JavaPlugin {
 				log.info("[PlayerNotes] error: config file does not exist and could not be created");
 			}
 		}
-	}
-
+	}*/
+	
 	public void loadConfiguration() {
-		// make sure the config exists
-		// and if it doesn't, make it!
-		this.checkConfiguration();
+		this.getConfig().options().copyDefaults(true);
+		FileConfiguration config = this.getConfig();
 		
-		// get the configuration..
-		Configuration config = getConfiguration();
 		String database = config.getString("database");
 		if(database.equalsIgnoreCase("mysql")) useMYSQL = true;
 		else useMYSQL = false;
@@ -208,6 +198,10 @@ public class PlayerNotes extends JavaPlugin {
 		mysqlUser = config.getString("mysql-user");
 		mysqlPass = config.getString("mysql-pass");
 		statsDumpInterval = config.getInt("stats-dump-interval", 5) * 60;
+	}
+	
+	public void saveConfiguration() {
+		this.saveConfig();
 	}
 	
 	// allow for colour tags to be used in strings..
