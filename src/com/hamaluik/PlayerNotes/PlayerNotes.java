@@ -5,9 +5,9 @@ package com.hamaluik.PlayerNotes;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.tehkode.permissions.PermissionManager;
@@ -55,12 +55,6 @@ public class PlayerNotes extends JavaPlugin {
 		
 		// ensure the database table exists..
 		dbm.ensureTablesExist();
-		
-		// import the plugin manager
-		PluginManager pm = this.getServer().getPluginManager();
-		
-		// check to see if ModTRS is installed (track # of submitted mod requests)
-		if(pm.getPlugin("ModTRS") != null) hasModTRS = true;
 		
 		// setup the listeners
 		playerListener = new PlayerNotesPlayerListener(this);
@@ -140,8 +134,13 @@ public class PlayerNotes extends JavaPlugin {
 	
 	// load the permissions plugin..
 	private void setupPermissions() {
-		if(getServer().getPluginManager().isPluginEnabled("PermissionsEx"))
-		    permissions = PermissionsEx.getPermissionManager();
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled("PermissionsEx")) {
+			this.permissions = PermissionsEx.getPermissionManager();
+			log.info("[PlayerNotes] permissions successfully loaded!");
+		}
+		else {
+			log.info("[PlayerNotes] ERROR: PermissionsEx not found!");
+		}
 	}
 	
 	// just an interface function for checking permissions
@@ -154,38 +153,6 @@ public class PlayerNotes extends JavaPlugin {
 			return player.isOp();
 		}
 	}
-	
-	/*private void checkConfiguration() {
-		// first, check to see if the file exists
-		File configFile = new File(getDataFolder() + "/config.yml");
-		if(!configFile.exists()) {
-			// file doesn't exist yet :/
-			log.info("[PlayerNotes] config file not found, will attempt to create a default!");
-			new File(getDataFolder().toString()).mkdir();
-			try {
-				// create the file
-				configFile.createNewFile();
-				// and attempt to write the defaults to it
-				FileWriter out = new FileWriter(getDataFolder() + "/config.yml");
-				out.write("---\n");
-				out.write("# database can be either:\n");
-				out.write("# 'mysql' or 'sqlite'\n");
-				out.write("database: sqlite\n\n");
-				out.write("# if using sqlite, this should be: plugins/PlayerNotes/PlayerNotes.db\n");
-				out.write("# if using mysql, this is the mysql database you wish to use\n");
-				out.write("database-name: plugins/PlayerNotes/PlayerNotes.db\n\n");
-				out.write("# only needed if using mysql\n");
-				out.write("mysql-user: ''\n");
-				out.write("mysql-pass: ''\n\n");
-				out.write("# how often (in minutes) to force-save stats to the DB\n");
-				out.write("stats-dump-interval: 30\n");
-				out.close();
-			} catch(IOException ex) {
-				// something went wrong :/
-				log.info("[PlayerNotes] error: config file does not exist and could not be created");
-			}
-		}
-	}*/
 	
 	public void loadConfiguration() {
 		this.getConfig().options().copyDefaults(true);

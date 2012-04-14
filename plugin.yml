@@ -2,7 +2,7 @@ name: PlayerNotes
 main: com.hamaluik.PlayerNotes.PlayerNotes
 version: 1.1.0
 author: FuzzyWuzzie
-softdepend: [Permissions, ModTRS]
+depend: [PermissionsEx]
 database: true
 commands:
    n:
