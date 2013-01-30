@@ -1,5 +1,6 @@
 database: sqlite
 database-name: plugins/PlayerNotes/PlayerNotes.db
+mysql-host: ''
 mysql-user: ''
 mysql-pass: ''
 stats-dump-interval: 30

@@ -22,7 +22,7 @@ public class DBManager {
 		try {
 			if(plugin.useMYSQL) {
 				Class.forName("com.mysql.jdbc.Driver");
-				connect = DriverManager.getConnection("jdbc:mysql://localhost/"+plugin.databaseName+"?"
+				connect = DriverManager.getConnection("jdbc:mysql://" + plugin.mysqlHost + "/"+plugin.databaseName+"?"
 						+ "user="+plugin.mysqlUser+"&password="+plugin.mysqlPass);
 			}
 			else {
