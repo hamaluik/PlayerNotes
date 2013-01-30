@@ -42,6 +42,7 @@ public class PlayerNotes extends JavaPlugin {
 	boolean useMYSQL = true;
 	public boolean hasModTRS = false;
 	String databaseName;
+	String mysqlHost;
 	String mysqlUser;
 	String mysqlPass;
 	private long statsDumpInterval;
@@ -162,6 +163,7 @@ public class PlayerNotes extends JavaPlugin {
 		if(database.equalsIgnoreCase("mysql")) useMYSQL = true;
 		else useMYSQL = false;
 		databaseName = config.getString("database-name");
+		mysqlHost = config.getString("mysql-host");
 		mysqlUser = config.getString("mysql-user");
 		mysqlPass = config.getString("mysql-pass");
 		statsDumpInterval = config.getInt("stats-dump-interval", 5) * 60;
